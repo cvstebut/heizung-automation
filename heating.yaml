@@ -12,12 +12,12 @@ switch:
       then:
        - binary_sensor.template.publish:
           id: relay_state_1
-          state: id(relay1).state
+          state: true
     on_turn_off:
       then:
        - binary_sensor.template.publish:
           id: relay_state_1
-          state: id(relay1).state
+          state: false
 
   - platform: gpio
     id: relay2
@@ -32,12 +32,12 @@ switch:
       then:
        - binary_sensor.template.publish:
           id: relay_state_2
-          state: id(relay2).state
+          state: true
     on_turn_off:
       then:
        - binary_sensor.template.publish:
           id: relay_state_2
-          state: id(relay2).state
+          state: false
 
   - platform: gpio
     id: relay3
@@ -52,12 +52,12 @@ switch:
       then:
        - binary_sensor.template.publish:
           id: relay_state_3
-          state: id(relay3).state
+          state: true
     on_turn_off:
       then:
        - binary_sensor.template.publish:
           id: relay_state_3
-          state: id(relay3).state
+          state: false
 
   - platform: gpio
     id: relay4
@@ -72,12 +72,12 @@ switch:
       then:
        - binary_sensor.template.publish:
           id: relay_state_4
-          state: id(relay4).state
+          state: true
     on_turn_off:
       then:
        - binary_sensor.template.publish:
           id: relay_state_4
-          state: id(relay4).state
+          state: false
 
   - platform: gpio
     id: relay5
@@ -92,12 +92,12 @@ switch:
       then:
        - binary_sensor.template.publish:
           id: relay_state_5
-          state: id(relay5).state
+          state: true
     on_turn_off:
       then:
        - binary_sensor.template.publish:
           id: relay_state_5
-          state: id(relay5).state
+          state: false
 
   - platform: gpio
     id: relay6
@@ -112,12 +112,12 @@ switch:
       then:
        - binary_sensor.template.publish:
           id: relay_state_6
-          state: id(relay6).state
+          state: true
     on_turn_off:
       then:
        - binary_sensor.template.publish:
           id: relay_state_6
-          state: id(relay6).state
+          state: false
 
   - platform: gpio
     id: relay7
@@ -132,12 +132,12 @@ switch:
       then:
        - binary_sensor.template.publish:
           id: relay_state_7
-          state: id(relay7).state
+          state: true
     on_turn_off:
       then:
        - binary_sensor.template.publish:
           id: relay_state_7
-          state: id(relay7).state
+          state: false
 
   - platform: gpio
     id: relay8
@@ -152,12 +152,12 @@ switch:
       then:
        - binary_sensor.template.publish:
           id: relay_state_8
-          state: id(relay8).state
+          state: true
     on_turn_off:
       then:
        - binary_sensor.template.publish:
           id: relay_state_8
-          state: id(relay8).state
+          state: false
 
 
 binary_sensor:
