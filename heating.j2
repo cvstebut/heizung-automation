@@ -13,7 +13,6 @@ switch:
         output: True
         pulldown: True
     on_value:
-      then:
         - binary_sensor.template.publish:
           id: relay_state_{{ c.number }}
           state: id(relay{{ c.number }}).state

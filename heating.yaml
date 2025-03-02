@@ -9,7 +9,6 @@ switch:
         output: True
         pulldown: True
     on_value:
-      then:
         - binary_sensor.template.publish:
           id: relay_state_1
           state: id(relay1).state
@@ -24,7 +23,6 @@ switch:
         output: True
         pulldown: True
     on_value:
-      then:
         - binary_sensor.template.publish:
           id: relay_state_2
           state: id(relay2).state
@@ -39,7 +37,6 @@ switch:
         output: True
         pulldown: True
     on_value:
-      then:
         - binary_sensor.template.publish:
           id: relay_state_3
           state: id(relay3).state
@@ -54,7 +51,6 @@ switch:
         output: True
         pulldown: True
     on_value:
-      then:
         - binary_sensor.template.publish:
           id: relay_state_4
           state: id(relay4).state
@@ -69,7 +65,6 @@ switch:
         output: True
         pulldown: True
     on_value:
-      then:
         - binary_sensor.template.publish:
           id: relay_state_5
           state: id(relay5).state
@@ -84,7 +79,6 @@ switch:
         output: True
         pulldown: True
     on_value:
-      then:
         - binary_sensor.template.publish:
           id: relay_state_6
           state: id(relay6).state
@@ -99,7 +93,6 @@ switch:
         output: True
         pulldown: True
     on_value:
-      then:
         - binary_sensor.template.publish:
           id: relay_state_7
           state: id(relay7).state
@@ -114,7 +107,6 @@ switch:
         output: True
         pulldown: True
     on_value:
-      then:
         - binary_sensor.template.publish:
           id: relay_state_8
           state: id(relay8).state
