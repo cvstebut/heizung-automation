@@ -8,7 +8,32 @@ Um Fehler und Aufwand bei der Erstellung überwiegend identischer Konfigurations
 
 Für die Generierung wird Python und ein Jinja2 Template verendet.
 
+## Links
+
+- [ESPHome - Packages](https://esphome.io/components/packages.html)
+- [Medium - Automatic yaml Generation with Jinja2](https://medium.com/@muazzem.mamun/automating-yaml-file-generation-with-jinja2-b42bfb8bacaa)
+- [Jinja2 - Whitespace control](https://jinja.palletsprojects.com/en/stable/templates/#whitespace-control)
+
 ## Python Umgebung
+
+### Python Setup
+
+```shell
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+```
+
+### Install Python Modules
+
+```shell
+pip install jinja2
+```
+
+### Script Execution
+
+```shell
+python ./generate.py
+```
 
 ## Jinja2 Template
 
