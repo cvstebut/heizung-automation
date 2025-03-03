@@ -1,3 +1,24 @@
+
+sensor:
+
+  - platform: homeassistant
+    id: ha_temp_bad_oben
+    name: "Temperatur Bad oben"
+    entity_id: sensor.thb1_59e2_temperature
+    filters:
+      - sliding_window_moving_average:
+          window_size: 15
+          send_every: 15
+
+  - platform: homeassistant
+    id: ha_temp_bad_oben
+    name: "Temperatur Bad oben"
+    entity_id: sensor.thb1_bb17_temperature
+    filters:
+      - sliding_window_moving_average:
+          window_size: 15
+          send_every: 15
+
 switch:
   - platform: gpio
     id: relay1
@@ -39,46 +60,19 @@ switch:
           id: relay_state_2
           state: false
 
-  - platform: gpio
-    id: relay3
-    name: hz01 Relais 3
-    pin:
-      number: 14
-      inverted: True
-      mode:
-        output: True
-        pulldown: True
-    on_turn_on:
-      then:
-       - binary_sensor.template.publish:
-          id: relay_state_3
-          state: true
-    on_turn_off:
-      then:
-       - binary_sensor.template.publish:
-          id: relay_state_3
-          state: false
 
-  - platform: gpio
-    id: relay4
-    name: hz01 Relais 4
-    pin:
-      number: 4
-      inverted: True
-      mode:
-        output: True
-        pulldown: True
-    on_turn_on:
-      then:
-       - binary_sensor.template.publish:
-          id: relay_state_4
-          state: true
-    on_turn_off:
-      then:
-       - binary_sensor.template.publish:
-          id: relay_state_4
-          state: false
+sensor:
 
+  - platform: homeassistant
+    id: ha_temp_bad_oben
+    name: "Temperatur Bad oben"
+    entity_id: sensor.thb1_921b_temperature
+    filters:
+      - sliding_window_moving_average:
+          window_size: 15
+          send_every: 15
+
+switch:
   - platform: gpio
     id: relay5
     name: hz01 Relais 5
@@ -99,96 +93,5 @@ switch:
           id: relay_state_5
           state: false
 
-  - platform: gpio
-    id: relay6
-    name: hz01 Relais 6
-    pin:
-      number: 25
-      inverted: True
-      mode:
-        output: True
-        pulldown: True
-    on_turn_on:
-      then:
-       - binary_sensor.template.publish:
-          id: relay_state_6
-          state: true
-    on_turn_off:
-      then:
-       - binary_sensor.template.publish:
-          id: relay_state_6
-          state: false
-
-  - platform: gpio
-    id: relay7
-    name: hz01 Relais 7
-    pin:
-      number: 33
-      inverted: True
-      mode:
-        output: True
-        pulldown: True
-    on_turn_on:
-      then:
-       - binary_sensor.template.publish:
-          id: relay_state_7
-          state: true
-    on_turn_off:
-      then:
-       - binary_sensor.template.publish:
-          id: relay_state_7
-          state: false
-
-  - platform: gpio
-    id: relay8
-    name: hz01 Relais 8
-    pin:
-      number: 32
-      inverted: True
-      mode:
-        output: True
-        pulldown: True
-    on_turn_on:
-      then:
-       - binary_sensor.template.publish:
-          id: relay_state_8
-          state: true
-    on_turn_off:
-      then:
-       - binary_sensor.template.publish:
-          id: relay_state_8
-          state: false
 
 
-binary_sensor:
-  - platform: template
-    name: hz01 PID Relais 1
-    id: relay_state_1
-
-  - platform: template
-    name: hz01 PID Relais 2
-    id: relay_state_2
-
-  - platform: template
-    name: hz01 PID Relais 3
-    id: relay_state_3
-
-  - platform: template
-    name: hz01 PID Relais 4
-    id: relay_state_4
-
-  - platform: template
-    name: hz01 PID Relais 5
-    id: relay_state_5
-
-  - platform: template
-    name: hz01 PID Relais 6
-    id: relay_state_6
-
-  - platform: template
-    name: hz01 PID Relais 7
-    id: relay_state_7
-
-  - platform: template
-    name: hz01 PID Relais 8
-    id: relay_state_8

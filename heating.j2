@@ -1,8 +1,20 @@
 {#
     Debug - Generate Switch - visible from HA
 -#}
+{%- for a in areas %}
+sensor:
+{% for ha in a.ha_sensors %}
+  - platform: homeassistant
+    id: ha_temp_bad_oben
+    name: "Temperatur Bad oben"
+    entity_id: {{ ha.entity_id }}
+    filters:
+      - sliding_window_moving_average:
+          window_size: 15
+          send_every: 15
+{% endfor %}
 switch:
-{%- for c in circuits %}
+{%- for c in a.circuits %}
   - platform: gpio
     id: relay{{ c.number }}
     name: {{ friendly_name }} Relais {{ c.number }}
@@ -23,13 +35,6 @@ switch:
           id: relay_state_{{ c.number }}
           state: false
 {% endfor %}
-
-{#
-    Debug - Dummy Output in HA
--#}
-binary_sensor:
-{%- for c in circuits %}
-  - platform: template
-    name: {{ friendly_name }} PID Relais {{ c.number }}
-    id: relay_state_{{ c.number }}
 {% endfor %}
+
+

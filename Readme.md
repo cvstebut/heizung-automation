@@ -13,8 +13,10 @@ Für die Generierung wird Python und ein Jinja2 Template verendet.
 - [ESPHome - Packages](https://esphome.io/components/packages.html)
 - [Medium - Automatic yaml Generation with Jinja2](https://medium.com/@muazzem.mamun/automating-yaml-file-generation-with-jinja2-b42bfb8bacaa)
 - [Jinja2 - Whitespace control](https://jinja.palletsprojects.com/en/stable/templates/#whitespace-control)
+- [yaml spec - merge](https://yaml.org/type/merge.html)
+- [blog - Wiederverwertbare ESPHome Codeblöcke in eigene yaml Datei auslagern.](https://smarthomeyourself.de/wiki/esphome/wiederverwertbare-esphome-codebloecke-in-eigene-yaml-datei-auslagern/)
 
-## Python Umgebung
+## Development Environment
 
 ### Python Setup
 
@@ -37,4 +39,18 @@ python ./generate.py
 
 ## Jinja2 Template
 
-## Ablauf bei der Programmierung des ESP32 mittels ESPHome
+## ESPHome Configuration
+
+Snippet in ESPHome's yaml configuration
+
+```yaml
+packages:
+  heizung:
+    url: https://github.com/cvstebut/heizung-automation
+    file: heating.yaml
+    refresh: 1s
+```
+
+Notes
+
+- During development, the configuration should always use the downloaded template from github. Thats why the ```refresh``` interval is kept very low.
