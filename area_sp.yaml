@@ -12,12 +12,13 @@ sensor:
   - platform: template
     name: "Sportzimmer Temperatur - gemittelt"
     id: sensor_sp
+    update_interval: 10s
     filters:
       - median:
-          window_size: 3
+          window_size: 5
           send_first_at: 1
     lambda: |-
-        ESP_LOGD("custom", "Weighted Sensors: %f", (id(sensor_sp_1).state * 50.0 + id(sensor_sp_2).state * 50.0)/100.0);
+        ESP_LOGD("custom", "Sportzimmer - Temperatur - gemittelt: %f", (id(sensor_sp_1).state * 50.0 + id(sensor_sp_2).state * 50.0)/100.0);
         return (id(sensor_sp_1).state * 50.0 + id(sensor_sp_2).state * 50.0)/100.0;
   - platform: pid
     name: "Sportzimmer - PID KP"
@@ -53,12 +54,13 @@ output:
     id: output_sp
     type: float
     write_action:
+      - delay: !lambda "return 20 * 3 / 7 * 60 * 1000;"
+      - output.set_level:
+          id: slow_pwm_sp_0
+          level: !lambda return state;
+      - delay: !lambda "return 20 * 4 / 7 * 60 * 1000;"
       - output.set_level:
           id: slow_pwm_sp_1
-          level: !lambda return state;
-      - delay: !lambda "return 20 * 1 / 2 * 60 * 1000;"
-      - output.set_level:
-          id: slow_pwm_sp_2
           level: !lambda return state;
 
   - platform: slow_pwm
@@ -106,9 +108,9 @@ output:
 binary_sensor:
   - platform: template
     id: stellventil_display_3
-    name: "Oben - Stellventil 3 - SP Vorn"
+    name: "Stellventil - Oben - 3 - SP Vorn"
 
   - platform: template
     id: stellventil_display_4
-    name: "Oben - Stellventil 4 - SP Hinten"
+    name: "Stellventil - Oben - 4 - SP Hinten"
 

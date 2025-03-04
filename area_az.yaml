@@ -12,12 +12,13 @@ sensor:
   - platform: template
     name: "Arbeitszimmer Temperatur - gemittelt"
     id: sensor_az
+    update_interval: 10s
     filters:
       - median:
-          window_size: 3
+          window_size: 5
           send_first_at: 1
     lambda: |-
-        ESP_LOGD("custom", "Weighted Sensors: %f", (id(sensor_az_1).state * 30.0 + id(sensor_az_2).state * 70.0)/100.0);
+        ESP_LOGD("custom", "Arbeitszimmer - Temperatur - gemittelt: %f", (id(sensor_az_1).state * 30.0 + id(sensor_az_2).state * 70.0)/100.0);
         return (id(sensor_az_1).state * 30.0 + id(sensor_az_2).state * 70.0)/100.0;
   - platform: pid
     name: "Arbeitszimmer - PID KP"
@@ -53,12 +54,13 @@ output:
     id: output_az
     type: float
     write_action:
+      - delay: !lambda "return 20 * 0 / 7 * 60 * 1000;"
+      - output.set_level:
+          id: slow_pwm_az_0
+          level: !lambda return state;
+      - delay: !lambda "return 20 * 1 / 7 * 60 * 1000;"
       - output.set_level:
           id: slow_pwm_az_1
-          level: !lambda return state;
-      - delay: !lambda "return 20 * 1 / 2 * 60 * 1000;"
-      - output.set_level:
-          id: slow_pwm_az_2
           level: !lambda return state;
 
   - platform: slow_pwm
@@ -106,9 +108,9 @@ output:
 binary_sensor:
   - platform: template
     id: stellventil_display_1
-    name: "Oben - Stellventil 1 - AZ Fenster"
+    name: "Stellventil - Oben - 1 - AZ Fenster"
 
   - platform: template
     id: stellventil_display_2
-    name: "Oben - Stellventil 2 - AZ Raum"
+    name: "Stellventil - Oben - 2 - AZ Raum"
 

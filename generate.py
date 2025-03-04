@@ -11,7 +11,15 @@ env = Environment(loader=FileSystemLoader("."))
 with open(INPUT_FILE_NAME, encoding="utf-8") as f:
     data = json.load(f)
 
+
+circuit_count = 0
 for a in data["areas"]:
+    circuit_count += len(a["circuits"])
+
+print(f"--Anzahl der Stellkreise: {circuit_count}")
+
+circuit_offset = 0
+for aindex, a in enumerate(data["areas"]):
     print("Processing area: " + a["name"])
 
     weighted_sensors_string = []
@@ -34,6 +42,11 @@ for a in data["areas"]:
     a["interval"] = data["interval"]
     a["level"] = data["level"]
     a["friendly_name"] = data["friendly_name"]
+    a["circuit_offset"] = circuit_offset
+    print(f" -- circuit_offset: {circuit_offset}")
+    a["circuit_count"] = circuit_count
+
+    circuit_offset += len(a["circuits"])
 
     template = env.get_template(TEMPLATE_FILE_NAME)
 

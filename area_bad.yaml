@@ -7,12 +7,13 @@ sensor:
   - platform: template
     name: "Badezimmer oben Temperatur - gemittelt"
     id: sensor_bad
+    update_interval: 10s
     filters:
       - median:
-          window_size: 3
+          window_size: 5
           send_first_at: 1
     lambda: |-
-        ESP_LOGD("custom", "Weighted Sensors: %f", (id(sensor_bad_1).state * 100.0)/100.0);
+        ESP_LOGD("custom", "Badezimmer oben - Temperatur - gemittelt: %f", (id(sensor_bad_1).state * 100.0)/100.0);
         return (id(sensor_bad_1).state * 100.0)/100.0;
   - platform: pid
     name: "Badezimmer oben - PID KP"
@@ -48,8 +49,9 @@ output:
     id: output_bad
     type: float
     write_action:
+      - delay: !lambda "return 20 * 2 / 7 * 60 * 1000;"
       - output.set_level:
-          id: slow_pwm_bad_1
+          id: slow_pwm_bad_0
           level: !lambda return state;
 
   - platform: slow_pwm
@@ -77,5 +79,5 @@ output:
 binary_sensor:
   - platform: template
     id: stellventil_display_5
-    name: "Oben - Stellventil 5 - Bad"
+    name: "Stellventil - Oben - 5 - Bad"
 

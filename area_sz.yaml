@@ -7,12 +7,13 @@ sensor:
   - platform: template
     name: "Schlafzimmer Temperatur - gemittelt"
     id: sensor_sz
+    update_interval: 10s
     filters:
       - median:
-          window_size: 3
+          window_size: 5
           send_first_at: 1
     lambda: |-
-        ESP_LOGD("custom", "Weighted Sensors: %f", (id(sensor_sz_1).state * 100.0)/100.0);
+        ESP_LOGD("custom", "Schlafzimmer - Temperatur - gemittelt: %f", (id(sensor_sz_1).state * 100.0)/100.0);
         return (id(sensor_sz_1).state * 100.0)/100.0;
   - platform: pid
     name: "Schlafzimmer - PID KP"
@@ -48,8 +49,9 @@ output:
     id: output_sz
     type: float
     write_action:
+      - delay: !lambda "return 20 * 5 / 7 * 60 * 1000;"
       - output.set_level:
-          id: slow_pwm_sz_1
+          id: slow_pwm_sz_0
           level: !lambda return state;
 
   - platform: slow_pwm
@@ -77,5 +79,5 @@ output:
 binary_sensor:
   - platform: template
     id: stellventil_display_6
-    name: "Oben - Stellventil 6 - Schlafzimmer"
+    name: "Stellventil - Oben - 6 - Schlafzimmer"
 

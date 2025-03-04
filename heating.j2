@@ -11,12 +11,13 @@ sensor:
   - platform: template
     name: "{{ name }} Temperatur - gemittelt"
     id: sensor_{{ id }}
+    update_interval: 10s
     filters:
       - median:
-          window_size: 3
+          window_size: 5
           send_first_at: 1
     lambda: |-
-        ESP_LOGD("custom", "Weighted Sensors: %f", {{ weighted_sensors }});
+        ESP_LOGD("custom", "{{ name }} - Temperatur - gemittelt: %f", {{ weighted_sensors }});
         return {{ weighted_sensors }};
   - platform: pid
     name: "{{ name }} - PID KP"
@@ -47,18 +48,19 @@ climate:
       ki: {{ pid.i }}
       kd: {{ pid.d }}
 
+{#
+    delay: distribute opening of all circuits across all areas
+-#}
 output:
   - platform: template
     id: output_{{ id }}
     type: float
     write_action:
 {%- for c in circuits %}
+      - delay: !lambda "return {{ interval }} * {{ loop.index0 + circuit_offset }} / {{ circuit_count }} * 60 * 1000;"
       - output.set_level:
-          id: slow_pwm_{{ id }}_{{ loop.index }}
+          id: slow_pwm_{{ id }}_{{ loop.index0 }}
           level: !lambda return state;
-{%- if loop.index < loop.length %}
-      - delay: !lambda "return {{ interval }} * {{ loop.index }} / {{ loop.length }} * 60 * 1000;"
-{%- endif %}
 {%- endfor %}
 {% for c in circuits %}
   - platform: slow_pwm
@@ -87,6 +89,6 @@ binary_sensor:
 {%- for c in circuits %}
   - platform: template
     id: stellventil_display_{{ c.number }}
-    name: "{{ level }} - Stellventil {{ c.number }} - {{ c.position }}"
+    name: "Stellventil - {{ level }} - {{ c.number }} - {{ c.position }}"
 {% endfor %}
 
