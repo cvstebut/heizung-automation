@@ -59,7 +59,7 @@ output:
 {%- for c in circuits %}
       - delay: !lambda "return {{ interval }} * {{ loop.index0 + circuit_offset }} / {{ circuit_count }} * 60 * 1000;"
       - output.set_level:
-          id: slow_pwm_{{ id }}_{{ loop.index0 }}
+          id: slow_pwm_{{ id }}_{{ loop.index }}
           level: !lambda return state;
 {%- endfor %}
 {% for c in circuits %}

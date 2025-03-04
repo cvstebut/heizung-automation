@@ -51,7 +51,7 @@ output:
     write_action:
       - delay: !lambda "return 20 * 6 / 7 * 60 * 1000;"
       - output.set_level:
-          id: slow_pwm_tr_0
+          id: slow_pwm_tr_1
           level: !lambda return state;
 
   - platform: slow_pwm
