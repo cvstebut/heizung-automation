@@ -59,7 +59,7 @@ output:
       inverted: true
       mode:
         output: true
-        pullup: True
+        pulldown: True
     period:
       minutes: 20
     restart_cycle_on_state_change: false
