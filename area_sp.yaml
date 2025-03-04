@@ -1,12 +1,12 @@
 sensor:
   - platform: homeassistant
     id: sensor_sp_1
-    name: "Sportzimmer Temperatur - Vorn"
+    name: "Sportzimmer Temperatur - SP Vorn"
     entity_id: sensor.thb1_3A04_temperature
 
   - platform: homeassistant
     id: sensor_sp_2
-    name: "Sportzimmer Temperatur - Hinten"
+    name: "Sportzimmer Temperatur - SP Hinten"
     entity_id: sensor.thb1_B46E_temperature
 
   - platform: template
@@ -106,9 +106,9 @@ output:
 binary_sensor:
   - platform: template
     id: stellventil_display_3
-    name: "Oben - Stellventil 3 - Vorn"
+    name: "Oben - Stellventil 3 - SP Vorn"
 
   - platform: template
     id: stellventil_display_4
-    name: "Oben - Stellventil 4 - Hinten"
+    name: "Oben - Stellventil 4 - SP Hinten"
 
