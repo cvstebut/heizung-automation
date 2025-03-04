@@ -1,0 +1,81 @@
+sensor:
+  - platform: homeassistant
+    id: sensor_sz_1
+    name: "Schlafzimmer Temperatur"
+    entity_id: sensor.thb1_958E_temperature
+
+  - platform: template
+    name: "Schlafzimmer Temperatur - gemittelt"
+    id: sensor_sz
+    filters:
+      - median:
+          window_size: 3
+          send_first_at: 1
+    lambda: |-
+        ESP_LOGD("custom", "Weighted Sensors: %f", (id(sensor_sz_1).state * 100.0)/100.0);
+        return (id(sensor_sz_1).state * 100.0)/100.0;
+  - platform: pid
+    name: "Schlafzimmer - PID KP"
+    type: KP
+    climate_id: climate_pid_sz
+  - platform: pid
+    name: "Schlafzimmer - PID KI"
+    type: KI
+    climate_id: climate_pid_sz
+  - platform: pid
+    name: "Schlafzimmer - PID KD"
+    type: KD
+    climate_id: climate_pid_sz
+  - platform: pid
+    name: "Schlafzimmer - PID HEAT"
+    type: HEAT
+    climate_id: climate_pid_sz
+
+climate:
+  - platform: pid
+    id: climate_pid_sz
+    name: "Schlafzimmer Climate PID"
+    sensor: sensor_sz
+    heat_output: output_sz
+    default_target_temperature: 19°C
+    control_parameters:
+      kp: 0.572962
+      ki: 0.00002
+      kd: 0.0
+
+output:
+  - platform: template
+    id: output_sz
+    type: float
+    write_action:
+      - output.set_level:
+          id: slow_pwm_sz_1
+          level: !lambda return state;
+
+  - platform: slow_pwm
+    id: slow_pwm_sz_1
+    pin:
+      number: 25
+      inverted: true
+      mode:
+        output: true
+        pulldown: True
+    period:
+      minutes: 20
+    restart_cycle_on_state_change: false
+    turn_on_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_6).publish_state(true);
+    turn_off_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_6).publish_state(false);
+
+
+# sensors enabling display of output state in HA
+binary_sensor:
+  - platform: template
+    id: stellventil_display_6
+    name: "Oben - Stellventil 6 - Schlafzimmer"
+

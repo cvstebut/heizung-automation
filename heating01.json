@@ -103,6 +103,54 @@
                 "d": "0.0",
                 "default": "22"
             }
+        },
+        {
+            "name": "Schlafzimmer",
+            "id": "sz",
+            "ha_sensors": [
+                {
+                    "entity_id": "sensor.thb1_958E_temperature",
+                    "weight": "100",
+                    "position": ""
+                }
+            ],
+            "circuits": [
+                {
+                    "gpio_pin": "25",
+                    "number": "6",
+                    "position": "Schlafzimmer"
+                }
+            ],
+            "pid": {
+                "p": "0.572962",
+                "i": "0.00002",
+                "d": "0.0",
+                "default": "19"
+            }
+        },
+        {
+            "name": "Technikraum",
+            "id": "tr",
+            "ha_sensors": [
+                {
+                    "entity_id": "sensor.thb1_F05C_temperature",
+                    "weight": "100",
+                    "position": "DuscheOben"
+                }
+            ],
+            "circuits": [
+                {
+                    "gpio_pin": "33",
+                    "number": "7",
+                    "position": "Technikraum"
+                }
+            ],
+            "pid": {
+                "p": "0.572962",
+                "i": "0.00002",
+                "d": "0.0",
+                "default": "17"
+            }
         }
     ]
 }

@@ -1,0 +1,81 @@
+sensor:
+  - platform: homeassistant
+    id: sensor_tr_1
+    name: "Technikraum Temperatur - DuscheOben"
+    entity_id: sensor.thb1_F05C_temperature
+
+  - platform: template
+    name: "Technikraum Temperatur - gemittelt"
+    id: sensor_tr
+    filters:
+      - median:
+          window_size: 3
+          send_first_at: 1
+    lambda: |-
+        ESP_LOGD("custom", "Weighted Sensors: %f", (id(sensor_tr_1).state * 100.0)/100.0);
+        return (id(sensor_tr_1).state * 100.0)/100.0;
+  - platform: pid
+    name: "Technikraum - PID KP"
+    type: KP
+    climate_id: climate_pid_tr
+  - platform: pid
+    name: "Technikraum - PID KI"
+    type: KI
+    climate_id: climate_pid_tr
+  - platform: pid
+    name: "Technikraum - PID KD"
+    type: KD
+    climate_id: climate_pid_tr
+  - platform: pid
+    name: "Technikraum - PID HEAT"
+    type: HEAT
+    climate_id: climate_pid_tr
+
+climate:
+  - platform: pid
+    id: climate_pid_tr
+    name: "Technikraum Climate PID"
+    sensor: sensor_tr
+    heat_output: output_tr
+    default_target_temperature: 17°C
+    control_parameters:
+      kp: 0.572962
+      ki: 0.00002
+      kd: 0.0
+
+output:
+  - platform: template
+    id: output_tr
+    type: float
+    write_action:
+      - output.set_level:
+          id: slow_pwm_tr_1
+          level: !lambda return state;
+
+  - platform: slow_pwm
+    id: slow_pwm_tr_1
+    pin:
+      number: 33
+      inverted: true
+      mode:
+        output: true
+        pulldown: True
+    period:
+      minutes: 20
+    restart_cycle_on_state_change: false
+    turn_on_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_7).publish_state(true);
+    turn_off_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_7).publish_state(false);
+
+
+# sensors enabling display of output state in HA
+binary_sensor:
+  - platform: template
+    id: stellventil_display_7
+    name: "Oben - Stellventil 7 - Technikraum"
+
