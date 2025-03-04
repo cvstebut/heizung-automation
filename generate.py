@@ -3,7 +3,7 @@ import json
 from jinja2 import Environment, FileSystemLoader
 
 INPUT_FILE_NAME = "heating01.json"
-OUTPUT_FILE_NAME = "heating.yaml"
+OUTPUT_FILE_NAME = "area.yaml"
 TEMPLATE_FILE_NAME = "heating.j2"
 
 env = Environment(loader=FileSystemLoader("."))
@@ -11,9 +11,33 @@ env = Environment(loader=FileSystemLoader("."))
 with open(INPUT_FILE_NAME, encoding="utf-8") as f:
     data = json.load(f)
 
-template = env.get_template(TEMPLATE_FILE_NAME)
+for a in data["areas"]:
+    print("Processing area: " + a["name"])
 
-rendered_template = template.render(data)
+    weighted_sensors_string = []
+    weight_sum = 0.0
+    for i, s in enumerate(a["ha_sensors"]):
+        weight_sum += float(s["weight"])
+        s["id"] = f"sensor_{a['id']}_{str(i + 1)}"
+        weighted_sensors_string.append(
+            f"id({s['id']}).state * {float(s['weight']):0.1f}"
+        )
 
-with open(OUTPUT_FILE_NAME, "w", encoding="utf-8") as f:
-    f.write(rendered_template)
+    weighted_sensors_string = (
+        "(" + " + ".join(weighted_sensors_string) + ")/" + str(weight_sum)
+    )
+    print(" --- weighted_sensors_string: " + weighted_sensors_string)
+
+    a["weighted_sensors"] = weighted_sensors_string
+
+    # insert globals into each area
+    a["interval"] = data["interval"]
+    a["level"] = data["level"]
+    a["friendly_name"] = data["friendly_name"]
+
+    template = env.get_template(TEMPLATE_FILE_NAME)
+
+    rendered_template = template.render(a)
+    output_file_name = f"area_{a['id']}.yaml"
+    with open(output_file_name, "w", encoding="utf-8") as f:
+        f.write(rendered_template)

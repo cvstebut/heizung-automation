@@ -1,45 +1,74 @@
 {
     "friendly_name": "hz01",
+    "level": "Oben",
+    "interval": "20",
+    "deadtime": "80",
+    "dallas_sensors": [
+        {
+            "address": "0x2a0000073c922928"
+        },
+        {
+            "address": "0xec0000072abe7928"
+        }
+    ],
     "areas": [
         {
-            "name": "Arbeitszimmer Mei",
-            "id": "bad",
+            "name": "Arbeitszimmer",
+            "id": "az",
             "ha_sensors": [
                 {
                     "entity_id": "sensor.thb1_59e2_temperature",
-                    "weight": "30"
+                    "weight": "30",
+                    "position": "Fenster"
                 },
                 {
                     "entity_id": "sensor.thb1_bb17_temperature",
-                    "weight": "70"
+                    "weight": "70",
+                    "position": "Schlaftür"
                 }
             ],
             "circuits": [
                 {
-                    "gpio_pin": "12",
-                    "number": "1"
+                    "gpio_pin": "18",
+                    "number": "1",
+                    "position": "AZ Fenster"
                 },
                 {
                     "gpio_pin": "13",
-                    "number": "2"
+                    "number": "2",
+                    "position": "AZ Raum"
                 }
-            ]
+            ],
+            "pid": {
+                "p": "0.572961",
+                "i": "0.00002",
+                "d": "0.0",
+                "default": "21"
+            }
         },
         {
             "name": "Badezimmer oben",
-            "id": "az",
+            "id": "bad",
             "ha_sensors": [
                 {
                     "entity_id": "sensor.thb1_921b_temperature",
-                    "weight": "100"
+                    "weight": "100",
+                    "position": ""
                 }
             ],
             "circuits": [
                 {
                     "gpio_pin": "26",
-                    "number": "5"
+                    "number": "5",
+                    "position": "Bad"
                 }
-            ]
+            ],
+            "pid": {
+                "p": "0.572962",
+                "i": "0.00002",
+                "d": "0.0",
+                "default": "22"
+            }
         }
     ]
 }

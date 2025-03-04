@@ -1,0 +1,81 @@
+sensor:
+  - platform: homeassistant
+    id: sensor_bad_1
+    name: "Badezimmer oben Temperatur"
+    entity_id: sensor.thb1_921b_temperature
+
+  - platform: template
+    name: "Badezimmer oben Temperatur - gemittelt"
+    id: sensor_bad
+    filters:
+      - sliding_window_moving_average:
+          window_size: 15
+          send_every: 15
+    lambda: |-
+        return (id(sensor_bad_1).state * 100.0)/100.0;
+  - platform: pid
+    name: "Badezimmer oben - PID KP"
+    type: KP
+    climate_id: climate_pid_bad
+  - platform: pid
+    name: "Badezimmer oben - PID KI"
+    type: KI
+    climate_id: climate_pid_bad
+  - platform: pid
+    name: "Badezimmer oben - PID KD"
+    type: KD
+    climate_id: climate_pid_bad
+  - platform: pid
+    name: "Badezimmer oben - PID HEAT"
+    type: HEAT
+    climate_id: climate_pid_bad
+
+climate:
+  - platform: pid
+    id: climate_pid_bad
+    name: "Badezimmer oben Climate PID"
+    sensor: sensor_bad
+    heat_output: output_bad
+    default_target_temperature: 22°C
+    control_parameters:
+      kp: 0.572962
+      ki: 0.00002
+      kd: 0.0
+
+output:
+  - platform: template
+    id: output_bad
+    type: float
+    write_action:
+      - output.set_level:
+        id: slow_pwm_bad_1
+        level: !lambda return state;
+        delay: !lambda: "return 20 * 0 / 1 * 60 * 1000;"
+
+  - platform: slow_pwm
+    id: slow_pwm_bad_1
+    pin:
+      number: 26
+      inverted: true
+      mode:
+        output: true
+        pullup: True
+    period:
+      minutes: 20
+    restart_cycle_on_state_change: false
+    turn_on_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_5).publish_state(true);
+    turn_off_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_5).publish_state(false);
+
+
+# sensors enabling display of output state in HA
+binary_sensor:
+  - platform: template
+    id: stellventil_display_5
+    name: "Oben - Stellventil 5 - Bad"
+

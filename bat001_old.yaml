@@ -1,0 +1,147 @@
+substitutions:
+  friendly_name: "Oskar Batterie"
+
+esphome:
+  name: bat001
+  friendly_name: bat001
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+  level: DEBUG
+  logs:
+    sensor: INFO
+    sensor.template: INFO
+    dallas.temp.sensor: INFO
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "invalid"
+
+ota:
+- platform: esphome
+  password: "invalid"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Bat001 Fallback Hotspot"
+    password: "invalid"
+
+captive_portal:
+
+time:
+- platform: sntp
+  id: sntp_time
+  timezone: "Europe/Berlin"
+
+one_wire:
+- platform: gpio
+  pin: 17
+
+text_sensor:
+- platform: template
+  name: ${friendly_name} Text Sensor
+  id: bat001_text_sensor
+  icon: "mdi:information-box"
+
+sensor:
+- platform: dallas_temp
+  name: ${friendly_name} Temperatur Oben
+  id: bat001_dallas_1
+  update_interval: 15s
+  address: 0x2a0000073c922a00
+
+- platform: dallas_temp
+  name: ${friendly_name} Temperatur Unten Links
+  id: bat001_dallas_2
+  update_interval: 15s
+  address: 0xec0000072abe7800
+  on_value:
+    then:
+      lambda: |-
+        id(bat001_text_sensor).publish_state("Dallas 2: " + std::to_string(x));
+
+- platform: dallas_temp
+  name: ${friendly_name} Temperatur Unten Rechts
+  id: bat001_dallas_3
+  update_interval: 15s
+  address: 0x9e0000073cc4d000
+
+- platform: template
+  name: ${friendly_name} niedrigste Temperatur
+  id: bat001_lowest_temperature
+  lambda: |-
+    return std::min({id(bat001_dallas_1).state, id(bat001_dallas_2).state, id(bat001_dallas_3).state});
+  on_value:
+    then:
+    - logger.log:
+        format: "Battery Temperatures: min(%.2f, %.2f, %.2f) = %.3f"
+        args: [ 'id(bat001_dallas_1).state', 'id(bat001_dallas_2).state', 'id(bat001_dallas_3).state', 'id(bat001_lowest_temperature).state' ]
+        level: INFO
+
+- platform: pid
+  name: ${friendly_name} PID Climate Heat Result
+  type: HEAT
+  climate_id: bat001_pid_climate
+
+binary_sensor:
+- platform: template
+  name: ${friendly_name} PID Relais
+  id: bat001_pid_relay_state
+
+output:
+- platform: slow_pwm
+  pin:
+    number: 16
+    inverted: false
+  id: bat001_slow_pwm_warm
+  period: 30s
+  restart_cycle_on_state_change: True
+  turn_on_action:
+  - binary_sensor.template.publish:
+      id: bat001_pid_relay_state
+      state: ON
+  turn_off_action:
+  - binary_sensor.template.publish:
+      id: bat001_pid_relay_state
+      state: OFF
+
+packages:
+  heizung:
+    url: https://github.com/cvstebut/heizung-automation
+    file: heating.yaml
+    refresh: 1s
+
+button:
+- platform: template
+  name: ${friendly_name} PID Climate Autotune
+  on_press:
+  - climate.pid.autotune: bat001_pid_climate
+
+climate:
+- platform: pid
+  id: bat001_pid_climate
+  name: ${friendly_name} PID Controller
+  sensor: bat001_lowest_temperature
+  default_target_temperature: 10°C
+  heat_output: bat001_slow_pwm_warm
+  visual:
+    min_temperature: -20
+    max_temperature: 40
+    temperature_step: 0.1
+  deadband_parameters:
+    threshold_high: 2.0°C # deadband from 6°c to 12°C with target temperature set to 10°C
+    threshold_low: -4.0°C
+  control_parameters:
+    kp: 0.0
+    ki: 0.0
+    kd: 0.0

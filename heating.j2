@@ -1,40 +1,90 @@
 {#
     Debug - Generate Switch - visible from HA
 -#}
-{%- for a in areas %}
 sensor:
-{% for ha in a.ha_sensors %}
+{%- for ha in ha_sensors %}
   - platform: homeassistant
-    id: ha_temp_bad_oben
-    name: "Temperatur Bad oben"
+    id: {{ ha.id }}
+    name: "{{ name }} Temperatur{% if ha.position %} - {{ ha.position }}{% endif %}"
     entity_id: {{ ha.entity_id }}
+{% endfor %}
+  - platform: template
+    name: "{{ name }} Temperatur - gemittelt"
+    id: sensor_{{ id }}
     filters:
       - sliding_window_moving_average:
           window_size: 15
           send_every: 15
-{% endfor %}
-switch:
-{%- for c in a.circuits %}
-  - platform: gpio
-    id: relay{{ c.number }}
-    name: {{ friendly_name }} Relais {{ c.number }}
-    pin:
-      number: {{ c.gpio_pin }}
-      inverted: True
-      mode:
-        output: True
-        pulldown: True
-    on_turn_on:
-      then:
-       - binary_sensor.template.publish:
-          id: relay_state_{{ c.number }}
-          state: true
-    on_turn_off:
-      then:
-       - binary_sensor.template.publish:
-          id: relay_state_{{ c.number }}
-          state: false
-{% endfor %}
+    lambda: |-
+        return {{ weighted_sensors }};
+  - platform: pid
+    name: "{{ name }} - PID KP"
+    type: KP
+    climate_id: climate_pid_{{ id}}
+  - platform: pid
+    name: "{{ name }} - PID KI"
+    type: KI
+    climate_id: climate_pid_{{ id}}
+  - platform: pid
+    name: "{{ name }} - PID KD"
+    type: KD
+    climate_id: climate_pid_{{ id}}
+  - platform: pid
+    name: "{{ name }} - PID HEAT"
+    type: HEAT
+    climate_id: climate_pid_{{ id}}
+
+climate:
+  - platform: pid
+    id: climate_pid_{{ id}}
+    name: "{{ name }} Climate PID"
+    sensor: sensor_{{ id }}
+    heat_output: output_{{ id }}
+    default_target_temperature: {{ pid.default }}°C
+    control_parameters:
+      kp: {{ pid.p }}
+      ki: {{ pid.i }}
+      kd: {{ pid.d }}
+
+output:
+  - platform: template
+    id: output_{{ id }}
+    type: float
+    write_action:
+{%- for c in circuits %}
+      - output.set_level:
+        id: slow_pwm_{{ id }}_{{ loop.index }}
+        level: !lambda return state;
+        delay: !lambda: "return {{ interval }} * {{ loop.index0 }} / {{ loop.length }} * 60 * 1000;"
 {% endfor %}
 
+{%- for c in circuits %}
+  - platform: slow_pwm
+    id: slow_pwm_{{ id }}_{{ loop.index }}
+    pin:
+      number: {{ c.gpio_pin }}
+      inverted: true
+      mode:
+        output: true
+        pullup: True
+    period:
+      minutes: {{ interval }}
+    restart_cycle_on_state_change: false
+    turn_on_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_{{ c.number }}).publish_state(true);
+    turn_off_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_{{ c.number }}).publish_state(false);
+{% endfor %}
+
+# sensors enabling display of output state in HA
+binary_sensor:
+{%- for c in circuits %}
+  - platform: template
+    id: stellventil_display_{{ c.number }}
+    name: "{{ level }} - Stellventil {{ c.number }} - {{ c.position }}"
+{% endfor %}
 
