@@ -17,7 +17,7 @@ sensor:
           window_size: 3
           send_first_at: 1
     lambda: |-
-        ESP_LOGD("custom", "Weighted Sensors: %f", (id(sensor_az_1).state * 30.0 + id(sensor_az_2).state * 70.0)/100.0)
+        ESP_LOGD("custom", "Weighted Sensors: %f", (id(sensor_az_1).state * 30.0 + id(sensor_az_2).state * 70.0)/100.0);
         return (id(sensor_az_1).state * 30.0 + id(sensor_az_2).state * 70.0)/100.0;
   - platform: pid
     name: "Arbeitszimmer - PID KP"

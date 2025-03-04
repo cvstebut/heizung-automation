@@ -16,7 +16,7 @@ sensor:
           window_size: 3
           send_first_at: 1
     lambda: |-
-        ESP_LOGD("custom", "Weighted Sensors: %f", {{ weighted_sensors }})
+        ESP_LOGD("custom", "Weighted Sensors: %f", {{ weighted_sensors }});
         return {{ weighted_sensors }};
   - platform: pid
     name: "{{ name }} - PID KP"
