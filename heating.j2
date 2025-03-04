@@ -55,7 +55,7 @@ output:
       - output.set_level:
         id: slow_pwm_{{ id }}_{{ loop.index }}
         level: !lambda return state;
-        delay: !lambda "return {{ interval }} * {{ loop.index0 }} / {{ loop.length }} * 60 * 1000;"
+      - delay: !lambda "return {{ interval }} * {{ loop.index0 }} / {{ loop.length }} * 60 * 1000;"
 {% endfor %}
 
 {%- for c in circuits %}
