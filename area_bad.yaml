@@ -12,8 +12,8 @@ sensor:
           window_size: 3
           send_first_at: 1
     lambda: |-
-        ESP_LOGD("main", "Sensor 1: %f", id(sensor_bad_1.state))
-        ESP_LOGD("main", "Mittlere Temperatur: %f", id(sensor_bad.state))
+        ESP_LOGD("main", "Sensor 1: %f", id(sensor_bad_1).state)
+        ESP_LOGD("main", "Mittlere Temperatur: %f", id(sensor_bad).state)
         return (id(sensor_bad_1).state * 100.0)/100.0;
   - platform: pid
     name: "Badezimmer oben - PID KP"

@@ -16,8 +16,8 @@ sensor:
           window_size: 3
           send_first_at: 1
     lambda: |-
-        ESP_LOGD("main", "Sensor 1: %f", id(sensor_{{ id }}_1.state))
-        ESP_LOGD("main", "Mittlere Temperatur: %f", id(sensor_{{ id }}.state))
+        ESP_LOGD("main", "Sensor 1: %f", id(sensor_{{ id }}_1).state)
+        ESP_LOGD("main", "Mittlere Temperatur: %f", id(sensor_{{ id }}).state)
         return {{ weighted_sensors }};
   - platform: pid
     name: "{{ name }} - PID KP"
