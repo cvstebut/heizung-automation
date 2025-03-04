@@ -48,9 +48,8 @@ output:
     type: float
     write_action:
       - output.set_level:
-        id: slow_pwm_bad_1
-        level: !lambda return state;
-      - delay: !lambda "return 20 * 0 / 1 * 60 * 1000;"
+          id: slow_pwm_bad_1
+          level: !lambda return state;
 
   - platform: slow_pwm
     id: slow_pwm_bad_1

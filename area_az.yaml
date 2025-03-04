@@ -1,113 +1,113 @@
 sensor:
-- platform: homeassistant
-  id: sensor_az_1
-  name: "Arbeitszimmer Temperatur - Fenster"
-  entity_id: sensor.thb1_59e2_temperature
+  - platform: homeassistant
+    id: sensor_az_1
+    name: "Arbeitszimmer Temperatur - Fenster"
+    entity_id: sensor.thb1_59e2_temperature
 
-- platform: homeassistant
-  id: sensor_az_2
-  name: "Arbeitszimmer Temperatur - Schlaftür"
-  entity_id: sensor.thb1_bb17_temperature
+  - platform: homeassistant
+    id: sensor_az_2
+    name: "Arbeitszimmer Temperatur - Schlaftür"
+    entity_id: sensor.thb1_bb17_temperature
 
-- platform: template
-  name: "Arbeitszimmer Temperatur - gemittelt"
-  id: sensor_az
-  filters:
-  - sliding_window_moving_average:
-      window_size: 15
-      send_every: 15
-  lambda: |-
-    return (id(sensor_az_1).state * 30.0 + id(sensor_az_2).state * 70.0)/100.0;
-- platform: pid
-  name: "Arbeitszimmer - PID KP"
-  type: KP
-  climate_id: climate_pid_az
-- platform: pid
-  name: "Arbeitszimmer - PID KI"
-  type: KI
-  climate_id: climate_pid_az
-- platform: pid
-  name: "Arbeitszimmer - PID KD"
-  type: KD
-  climate_id: climate_pid_az
-- platform: pid
-  name: "Arbeitszimmer - PID HEAT"
-  type: HEAT
-  climate_id: climate_pid_az
+  - platform: template
+    name: "Arbeitszimmer Temperatur - gemittelt"
+    id: sensor_az
+    filters:
+      - sliding_window_moving_average:
+          window_size: 15
+          send_every: 15
+    lambda: |-
+        return (id(sensor_az_1).state * 30.0 + id(sensor_az_2).state * 70.0)/100.0;
+  - platform: pid
+    name: "Arbeitszimmer - PID KP"
+    type: KP
+    climate_id: climate_pid_az
+  - platform: pid
+    name: "Arbeitszimmer - PID KI"
+    type: KI
+    climate_id: climate_pid_az
+  - platform: pid
+    name: "Arbeitszimmer - PID KD"
+    type: KD
+    climate_id: climate_pid_az
+  - platform: pid
+    name: "Arbeitszimmer - PID HEAT"
+    type: HEAT
+    climate_id: climate_pid_az
 
 climate:
-- platform: pid
-  id: climate_pid_az
-  name: "Arbeitszimmer Climate PID"
-  sensor: sensor_az
-  heat_output: output_az
-  default_target_temperature: 21°C
-  control_parameters:
-    kp: 0.572961
-    ki: 0.00002
-    kd: 0.0
+  - platform: pid
+    id: climate_pid_az
+    name: "Arbeitszimmer Climate PID"
+    sensor: sensor_az
+    heat_output: output_az
+    default_target_temperature: 21°C
+    control_parameters:
+      kp: 0.572961
+      ki: 0.00002
+      kd: 0.0
 
 output:
-- platform: template
-  id: output_az
-  type: float
-  write_action:
-  - output.set_level:
-      id: slow_pwm_az_1
-      level: !lambda return state;
-  - delay: !lambda "return 20 * 0 / 2 * 60 * 1000;"
+  - platform: template
+    id: output_az
+    type: float
+    write_action:
+      - output.set_level:
+          id: slow_pwm_az_1
+          level: !lambda return state;
+      - delay: !lambda "return 20 * 1 / 2 * 60 * 1000;"
+      - output.set_level:
+          id: slow_pwm_az_2
+          level: !lambda return state;
 
-  - output.set_level:
-      id: slow_pwm_az_2
-      level: !lambda return state;
-  - delay: !lambda "return 20 * 1 / 2 * 60 * 1000;"
+  - platform: slow_pwm
+    id: slow_pwm_az_1
+    pin:
+      number: 18
+      inverted: true
+      mode:
+        output: true
+        pullup: True
+    period:
+      minutes: 20
+    restart_cycle_on_state_change: false
+    turn_on_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_1).publish_state(true);
+    turn_off_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_1).publish_state(false);
 
-- platform: slow_pwm
-  id: slow_pwm_az_1
-  pin:
-    number: 18
-    inverted: true
-    mode:
-      output: true
-      pullup: True
-  period:
-    minutes: 20
-  restart_cycle_on_state_change: false
-  turn_on_action:
-    then:
-    - lambda: |-
-        id(stellventil_display_1).publish_state(true);
-  turn_off_action:
-    then:
-    - lambda: |-
-        id(stellventil_display_1).publish_state(false);
+  - platform: slow_pwm
+    id: slow_pwm_az_2
+    pin:
+      number: 13
+      inverted: true
+      mode:
+        output: true
+        pullup: True
+    period:
+      minutes: 20
+    restart_cycle_on_state_change: false
+    turn_on_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_2).publish_state(true);
+    turn_off_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_2).publish_state(false);
 
-- platform: slow_pwm
-  id: slow_pwm_az_2
-  pin:
-    number: 13
-    inverted: true
-    mode:
-      output: true
-      pullup: True
-  period:
-    minutes: 20
-  restart_cycle_on_state_change: false
-  turn_on_action:
-    then:
-    - lambda: |-
-        id(stellventil_display_2).publish_state(true);
-  turn_off_action:
-    then:
-    - lambda: |-
-        id(stellventil_display_2).publish_state(false);
 
 # sensors enabling display of output state in HA
 binary_sensor:
-- platform: template
-  id: stellventil_display_1
-  name: "Oben - Stellventil 1 - AZ Fenster"
+  - platform: template
+    id: stellventil_display_1
+    name: "Oben - Stellventil 1 - AZ Fenster"
 
-- platform: template
-  id: stellventil_display_2
-  name: "Oben - Stellventil 2 - AZ Raum"
+  - platform: template
+    id: stellventil_display_2
+    name: "Oben - Stellventil 2 - AZ Raum"
+

@@ -53,12 +53,13 @@ output:
     write_action:
 {%- for c in circuits %}
       - output.set_level:
-        id: slow_pwm_{{ id }}_{{ loop.index }}
-        level: !lambda return state;
-      - delay: !lambda "return {{ interval }} * {{ loop.index0 }} / {{ loop.length }} * 60 * 1000;"
-{% endfor %}
-
-{%- for c in circuits %}
+          id: slow_pwm_{{ id }}_{{ loop.index }}
+          level: !lambda return state;
+{%- if loop.index < loop.length %}
+      - delay: !lambda "return {{ interval }} * {{ loop.index }} / {{ loop.length }} * 60 * 1000;"
+{%- endif %}
+{%- endfor %}
+{% for c in circuits %}
   - platform: slow_pwm
     id: slow_pwm_{{ id }}_{{ loop.index }}
     pin:
