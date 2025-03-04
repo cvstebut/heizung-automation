@@ -69,6 +69,40 @@
                 "d": "0.0",
                 "default": "22"
             }
+        },
+        {
+            "name": "Sportzimmer",
+            "id": "sp",
+            "ha_sensors": [
+                {
+                    "entity_id": "sensor.thb1_3A04_temperature",
+                    "weight": "50",
+                    "position": "Vorn"
+                },
+                {
+                    "entity_id": "sensor.thb1_B46E_temperature",
+                    "weight": "50",
+                    "position": "Hinten"
+                }
+            ],
+            "circuits": [
+                {
+                    "gpio_pin": "14",
+                    "number": "3",
+                    "position": "Vorn"
+                },
+                {
+                    "gpio_pin": "4",
+                    "number": "4",
+                    "position": "Hinten"
+                }
+            ],
+            "pid": {
+                "p": "0.572962",
+                "i": "0.00002",
+                "d": "0.0",
+                "default": "22"
+            }
         }
     ]
 }

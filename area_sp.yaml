@@ -1,0 +1,114 @@
+sensor:
+  - platform: homeassistant
+    id: sensor_sp_1
+    name: "Sportzimmer Temperatur - Vorn"
+    entity_id: sensor.thb1_3A04_temperature
+
+  - platform: homeassistant
+    id: sensor_sp_2
+    name: "Sportzimmer Temperatur - Hinten"
+    entity_id: sensor.thb1_B46E_temperature
+
+  - platform: template
+    name: "Sportzimmer Temperatur - gemittelt"
+    id: sensor_sp
+    filters:
+      - median:
+          window_size: 3
+          send_first_at: 1
+    lambda: |-
+        ESP_LOGD("custom", "Weighted Sensors: %f", (id(sensor_sp_1).state * 50.0 + id(sensor_sp_2).state * 50.0)/100.0);
+        return (id(sensor_sp_1).state * 50.0 + id(sensor_sp_2).state * 50.0)/100.0;
+  - platform: pid
+    name: "Sportzimmer - PID KP"
+    type: KP
+    climate_id: climate_pid_sp
+  - platform: pid
+    name: "Sportzimmer - PID KI"
+    type: KI
+    climate_id: climate_pid_sp
+  - platform: pid
+    name: "Sportzimmer - PID KD"
+    type: KD
+    climate_id: climate_pid_sp
+  - platform: pid
+    name: "Sportzimmer - PID HEAT"
+    type: HEAT
+    climate_id: climate_pid_sp
+
+climate:
+  - platform: pid
+    id: climate_pid_sp
+    name: "Sportzimmer Climate PID"
+    sensor: sensor_sp
+    heat_output: output_sp
+    default_target_temperature: 22°C
+    control_parameters:
+      kp: 0.572962
+      ki: 0.00002
+      kd: 0.0
+
+output:
+  - platform: template
+    id: output_sp
+    type: float
+    write_action:
+      - output.set_level:
+          id: slow_pwm_sp_1
+          level: !lambda return state;
+      - delay: !lambda "return 20 * 1 / 2 * 60 * 1000;"
+      - output.set_level:
+          id: slow_pwm_sp_2
+          level: !lambda return state;
+
+  - platform: slow_pwm
+    id: slow_pwm_sp_1
+    pin:
+      number: 14
+      inverted: true
+      mode:
+        output: true
+        pulldown: True
+    period:
+      minutes: 20
+    restart_cycle_on_state_change: false
+    turn_on_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_3).publish_state(true);
+    turn_off_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_3).publish_state(false);
+
+  - platform: slow_pwm
+    id: slow_pwm_sp_2
+    pin:
+      number: 4
+      inverted: true
+      mode:
+        output: true
+        pulldown: True
+    period:
+      minutes: 20
+    restart_cycle_on_state_change: false
+    turn_on_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_4).publish_state(true);
+    turn_off_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_4).publish_state(false);
+
+
+# sensors enabling display of output state in HA
+binary_sensor:
+  - platform: template
+    id: stellventil_display_3
+    name: "Oben - Stellventil 3 - Vorn"
+
+  - platform: template
+    id: stellventil_display_4
+    name: "Oben - Stellventil 4 - Hinten"
+
