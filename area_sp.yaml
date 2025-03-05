@@ -58,10 +58,11 @@ output:
           condition:
             lambda: return ((state == 0.0));
           then:
-            - logger.log: "-- output_sp: write_action triggered with state == 0.0"
+            - logger.log: "---  ZERO   --- output_sp: write_action triggered with state == 0.0"
           else:
-            - logger.log: "-- output_sp: write_action triggered with state <> 0"
+            - logger.log: "-- NON-ZERO --- output_sp: write_action triggered with state <> 0"
       - delay: !lambda "return 20 * 3 / 7 * 60 * 1000;"
+      - logger.log: "---  After DELAY  --- setting slow_pwm_sp_1 with state using lambda"
       - output.set_level:
           id: slow_pwm_sp_1
           level: !lambda return state;
@@ -69,10 +70,11 @@ output:
           condition:
             lambda: return ((state == 0.0));
           then:
-            - logger.log: "-- output_sp: write_action triggered with state == 0.0"
+            - logger.log: "---  ZERO   --- output_sp: write_action triggered with state == 0.0"
           else:
-            - logger.log: "-- output_sp: write_action triggered with state <> 0"
+            - logger.log: "-- NON-ZERO --- output_sp: write_action triggered with state <> 0"
       - delay: !lambda "return 20 * 4 / 7 * 60 * 1000;"
+      - logger.log: "---  After DELAY  --- setting slow_pwm_sp_2 with state using lambda"
       - output.set_level:
           id: slow_pwm_sp_2
           level: !lambda return state;

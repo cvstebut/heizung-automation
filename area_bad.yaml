@@ -53,10 +53,11 @@ output:
           condition:
             lambda: return ((state == 0.0));
           then:
-            - logger.log: "-- output_bad: write_action triggered with state == 0.0"
+            - logger.log: "---  ZERO   --- output_bad: write_action triggered with state == 0.0"
           else:
-            - logger.log: "-- output_bad: write_action triggered with state <> 0"
+            - logger.log: "-- NON-ZERO --- output_bad: write_action triggered with state <> 0"
       - delay: !lambda "return 20 * 2 / 7 * 60 * 1000;"
+      - logger.log: "---  After DELAY  --- setting slow_pwm_bad_1 with state using lambda"
       - output.set_level:
           id: slow_pwm_bad_1
           level: !lambda return state;

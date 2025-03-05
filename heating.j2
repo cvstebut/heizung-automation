@@ -61,10 +61,11 @@ output:
           condition:
             lambda: return ((state == 0.0));
           then:
-            - logger.log: "-- output_{{ id }}: write_action triggered with state == 0.0"
+            - logger.log: "---  ZERO   --- output_{{ id }}: write_action triggered with state == 0.0"
           else:
-            - logger.log: "-- output_{{ id }}: write_action triggered with state <> 0"
+            - logger.log: "-- NON-ZERO --- output_{{ id }}: write_action triggered with state <> 0"
       - delay: !lambda "return {{ interval }} * {{ loop.index0 + circuit_offset }} / {{ circuit_count }} * 60 * 1000;"
+      - logger.log: "---  After DELAY  --- setting slow_pwm_{{ id }}_{{ loop.index }} with state using lambda"
       - output.set_level:
           id: slow_pwm_{{ id }}_{{ loop.index }}
           level: !lambda return state;
