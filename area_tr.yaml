@@ -58,7 +58,7 @@ output:
     id: slow_pwm_tr_1
     pin:
       number: 33
-      inverted: true
+      inverted: false
       mode:
         output: true
         pulldown: True

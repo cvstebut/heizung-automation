@@ -67,7 +67,7 @@ output:
     id: slow_pwm_az_1
     pin:
       number: 18
-      inverted: true
+      inverted: false
       mode:
         output: true
         pulldown: True
@@ -87,7 +87,7 @@ output:
     id: slow_pwm_az_2
     pin:
       number: 13
-      inverted: true
+      inverted: false
       mode:
         output: true
         pulldown: True

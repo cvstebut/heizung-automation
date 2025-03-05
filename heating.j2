@@ -67,7 +67,7 @@ output:
     id: slow_pwm_{{ id }}_{{ loop.index }}
     pin:
       number: {{ c.gpio_pin }}
-      inverted: true
+      inverted: false
       mode:
         output: true
         pulldown: True
