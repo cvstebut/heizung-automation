@@ -13,7 +13,6 @@ sensor:
           window_size: 5
           send_first_at: 1
     lambda: |-
-        ESP_LOGD("custom", "Technikraum - Temperatur - gemittelt: %f", (id(sensor_tr_1).state * 100.0)/100.0);
         return (id(sensor_tr_1).state * 100.0)/100.0;
   - platform: pid
     name: "Technikraum - PID KP"
@@ -73,6 +72,8 @@ output:
     period:
       minutes: 20
     restart_cycle_on_state_change: false
+    state_change_action:
+        - logger.log: "---  SLOWPWM StateChange --- slow_pwm_tr_1 state changed"
     turn_on_action:
       then:
         - lambda: |-

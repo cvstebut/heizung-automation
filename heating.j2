@@ -17,7 +17,6 @@ sensor:
           window_size: 5
           send_first_at: 1
     lambda: |-
-        ESP_LOGD("custom", "{{ name }} - Temperatur - gemittelt: %f", {{ weighted_sensors }});
         return {{ weighted_sensors }};
   - platform: pid
     name: "{{ name }} - PID KP"
@@ -82,6 +81,8 @@ output:
     period:
       minutes: {{ interval }}
     restart_cycle_on_state_change: false
+    state_change_action:
+        - logger.log: "---  SLOWPWM StateChange --- slow_pwm_{{ id }}_{{ loop.index }} state changed"
     turn_on_action:
       then:
         - lambda: |-

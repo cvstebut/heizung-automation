@@ -18,7 +18,6 @@ sensor:
           window_size: 5
           send_first_at: 1
     lambda: |-
-        ESP_LOGD("custom", "Arbeitszimmer - Temperatur - gemittelt: %f", (id(sensor_az_1).state * 30.0 + id(sensor_az_2).state * 70.0)/100.0);
         return (id(sensor_az_1).state * 30.0 + id(sensor_az_2).state * 70.0)/100.0;
   - platform: pid
     name: "Arbeitszimmer - PID KP"
@@ -90,6 +89,8 @@ output:
     period:
       minutes: 20
     restart_cycle_on_state_change: false
+    state_change_action:
+        - logger.log: "---  SLOWPWM StateChange --- slow_pwm_az_1 state changed"
     turn_on_action:
       then:
         - lambda: |-
@@ -110,6 +111,8 @@ output:
     period:
       minutes: 20
     restart_cycle_on_state_change: false
+    state_change_action:
+        - logger.log: "---  SLOWPWM StateChange --- slow_pwm_az_2 state changed"
     turn_on_action:
       then:
         - lambda: |-
