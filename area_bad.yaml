@@ -51,7 +51,7 @@ output:
     write_action:
       - if:
           condition:
-            lambda: return ((state == 0.0))
+            lambda: return ((state == 0.0));
           then:
             - logger.log: "-- output_bad: write_action triggered with state == 0.0"
           else:

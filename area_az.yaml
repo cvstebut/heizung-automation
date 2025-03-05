@@ -56,7 +56,7 @@ output:
     write_action:
       - if:
           condition:
-            lambda: return ((state == 0.0))
+            lambda: return ((state == 0.0));
           then:
             - logger.log: "-- output_az: write_action triggered with state == 0.0"
           else:
@@ -67,7 +67,7 @@ output:
           level: !lambda return state;
       - if:
           condition:
-            lambda: return ((state == 0.0))
+            lambda: return ((state == 0.0));
           then:
             - logger.log: "-- output_az: write_action triggered with state == 0.0"
           else:

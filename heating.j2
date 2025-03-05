@@ -59,7 +59,7 @@ output:
 {%- for c in circuits %}
       - if:
           condition:
-            lambda: return ((state == 0.0))
+            lambda: return ((state == 0.0));
           then:
             - logger.log: "-- output_{{ id }}: write_action triggered with state == 0.0"
           else:
