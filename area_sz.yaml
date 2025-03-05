@@ -43,11 +43,6 @@ climate:
       ki: 0.00002
       kd: 0.0
 
-globals:
-  - id: g_output_sz
-    type: float
-
-
 output:
   - platform: template
     id: output_sz

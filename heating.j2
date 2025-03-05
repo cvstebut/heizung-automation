@@ -50,11 +50,6 @@ climate:
 {#
     debug: add globals to monitor state of output_template
 -#}
-globals:
-{%- for c in circuits %}
-  - id: g_output_{{ id }}
-    type: float
-{% endfor %}
 
 {#
     delay: distribute opening of all circuits across all areas
