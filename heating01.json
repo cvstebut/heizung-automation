@@ -59,7 +59,7 @@
             "circuits": [
                 {
                     "gpio_pin": "26",
-                    "number": "5",
+                    "number": "6",
                     "position": "Bad"
                 }
             ],
@@ -117,7 +117,7 @@
             "circuits": [
                 {
                     "gpio_pin": "25",
-                    "number": "6",
+                    "number": "5",
                     "position": "Schlafzimmer"
                 }
             ],

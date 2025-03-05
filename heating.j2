@@ -48,6 +48,15 @@ climate:
       kd: {{ pid.d }}
 
 {#
+    debug: add globals to monitor state of output_template
+-#}
+globals:
+{%- for c in circuits %}
+  - id: g_output_{{ id }}
+    type: float
+{% endfor %}
+
+{#
     delay: distribute opening of all circuits across all areas
 -#}
 output:
@@ -68,6 +77,7 @@ output:
       - output.set_level:
           id: slow_pwm_{{ id }}_{{ loop.index }}
           level: !lambda return state;
+
 {%- endfor %}
 {% for c in circuits %}
   - platform: slow_pwm

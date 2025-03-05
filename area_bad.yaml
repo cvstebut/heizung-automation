@@ -43,6 +43,11 @@ climate:
       ki: 0.00002
       kd: 0.0
 
+globals:
+  - id: g_output_bad
+    type: float
+
+
 output:
   - platform: template
     id: output_bad
@@ -77,16 +82,16 @@ output:
     turn_on_action:
       then:
         - lambda: |-
-            id(stellventil_display_5).publish_state(true);
+            id(stellventil_display_6).publish_state(true);
     turn_off_action:
       then:
         - lambda: |-
-            id(stellventil_display_5).publish_state(false);
+            id(stellventil_display_6).publish_state(false);
 
 
 # sensors enabling display of output state in HA
 binary_sensor:
   - platform: template
-    id: stellventil_display_5
-    name: "Stellventil - Oben - 5 - Bad"
+    id: stellventil_display_6
+    name: "Stellventil - Oben - 6 - Bad"
 
