@@ -57,6 +57,15 @@ output:
     type: float
     write_action:
 {%- for c in circuits %}
+      - if:
+          condition:
+            lambda: return ((state == 0.0))
+          then:
+            - logger.log: "-- output_{{ id }}: write_action triggered with state == 0.0"
+          else:
+            - logger.log:
+              format: "-- output_{{ id }}: write_action triggered with state == %f"
+              args: ['id(output_{{ id }}).state']
       - delay: !lambda "return {{ interval }} * {{ loop.index0 + circuit_offset }} / {{ circuit_count }} * 60 * 1000;"
       - output.set_level:
           id: slow_pwm_{{ id }}_{{ loop.index }}

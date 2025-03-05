@@ -49,6 +49,15 @@ output:
     id: output_sz
     type: float
     write_action:
+      - if:
+          condition:
+            lambda: return ((state == 0.0))
+          then:
+            - logger.log: "-- output_sz: write_action triggered with state == 0.0"
+          else:
+            - logger.log:
+              format: "-- output_sz: write_action triggered with state == %f"
+              args: ['id(output_sz).state']
       - delay: !lambda "return 20 * 5 / 7 * 60 * 1000;"
       - output.set_level:
           id: slow_pwm_sz_1
