@@ -55,9 +55,7 @@ output:
           then:
             - logger.log: "-- output_tr: write_action triggered with state == 0.0"
           else:
-            - logger.log:
-                format: "-- output_tr: write_action triggered with state == %f"
-                args: ['id(output_tr).state']
+            - logger.log: "-- output_tr: write_action triggered with state <> 0"
       - delay: !lambda "return 20 * 6 / 7 * 60 * 1000;"
       - output.set_level:
           id: slow_pwm_tr_1

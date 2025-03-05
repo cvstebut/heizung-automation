@@ -60,9 +60,7 @@ output:
           then:
             - logger.log: "-- output_az: write_action triggered with state == 0.0"
           else:
-            - logger.log:
-                format: "-- output_az: write_action triggered with state == %f"
-                args: ['id(output_az).state']
+            - logger.log: "-- output_az: write_action triggered with state <> 0"
       - delay: !lambda "return 20 * 0 / 7 * 60 * 1000;"
       - output.set_level:
           id: slow_pwm_az_1
@@ -73,9 +71,7 @@ output:
           then:
             - logger.log: "-- output_az: write_action triggered with state == 0.0"
           else:
-            - logger.log:
-                format: "-- output_az: write_action triggered with state == %f"
-                args: ['id(output_az).state']
+            - logger.log: "-- output_az: write_action triggered with state <> 0"
       - delay: !lambda "return 20 * 1 / 7 * 60 * 1000;"
       - output.set_level:
           id: slow_pwm_az_2
