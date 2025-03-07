@@ -8,10 +8,7 @@ sensor:
     name: "Technikraum Temperatur - gemittelt"
     id: sensor_tr
     update_interval: 10s
-    filters:
-      - median:
-          window_size: 5
-          send_first_at: 1
+
     lambda: |-
         return (id(sensor_tr_1).state * 100.0)/100.0;
   - platform: pid
