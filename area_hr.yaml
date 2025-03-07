@@ -1,0 +1,93 @@
+sensor:
+  - platform: homeassistant
+    id: sensor_hr_1
+    name: "Hobbyraum Temperatur - Regal"
+    entity_id: sensor.thb1_ADC9_temperature
+
+  - platform: template
+    name: "Hobbyraum Temperatur - gemittelt"
+    id: sensor_hr
+    update_interval: 10s
+    filters:
+      - median:
+          window_size: 5
+          send_first_at: 1
+
+    lambda: |-
+        return (id(sensor_hr_1).state * 100.0)/100.0;
+  - platform: pid
+    name: "Hobbyraum - PID KP"
+    type: KP
+    climate_id: climate_pid_hr
+  - platform: pid
+    name: "Hobbyraum - PID KI"
+    type: KI
+    climate_id: climate_pid_hr
+  - platform: pid
+    name: "Hobbyraum - PID KD"
+    type: KD
+    climate_id: climate_pid_hr
+  - platform: pid
+    name: "Hobbyraum - PID HEAT"
+    type: HEAT
+    climate_id: climate_pid_hr
+
+climate:
+  - platform: pid
+    id: climate_pid_hr
+    name: "Hobbyraum Climate PID"
+    sensor: sensor_hr
+    heat_output: output_hr
+    default_target_temperature: 22°C
+    control_parameters:
+      kp: 0.572962
+      ki: 0.00002
+      kd: 0.0
+
+output:
+  - platform: template
+    id: output_hr
+    type: float
+    write_action:
+      - if:
+          condition:
+            lambda: return ((state == 0.0));
+          then:
+            - logger.log: "---  ZERO   --- output_hr: write_action triggered with state == 0.0"
+          else:
+            - logger.log: "-- NON-ZERO --- output_hr: write_action triggered with state <> 0"
+      - delay: !lambda "return 1 * 6 / 8 * 60 * 1000;"
+      - logger.log: "---  After DELAY  --- setting slow_pwm_hr_1 with state using lambda"
+      - output.set_level:
+          id: slow_pwm_hr_1
+          level: !lambda return state;
+
+  - platform: slow_pwm
+    id: slow_pwm_hr_1
+    pin:
+      number: 33
+      inverted: false
+      mode:
+        output: true
+        pulldown: True
+    period:
+      minutes: 1
+    restart_cycle_on_state_change: false
+    state_change_action:
+        - logger.log: "---  SLOWPWM StateChange --- slow_pwm_hr_1 state changed"
+    turn_on_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_7).publish_state(true);
+    turn_off_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_7).publish_state(false);
+
+
+# sensors enabling display of output state in HA
+binary_sensor:
+  - platform: template
+    id: stellventil_display_7
+    name: "Stellventil - Unten - 7 - Technikraum"
+

@@ -1,0 +1,170 @@
+{
+    "friendly_name": "hz06",
+    "level": "Unten",
+    "interval": "1",
+    "deadtime": "80",
+    "dallas_sensors": [
+        {
+            "address": "0x2a0000073c922928"
+        },
+        {
+            "address": "0xec0000072abe7928"
+        }
+    ],
+    "areas": [
+        {
+            "name": "Bad unten",
+            "id": "bu",
+            "ha_sensors": [
+                {
+                    "entity_id": "sensor.thb1_32AF_temperature",
+                    "weight": "100",
+                    "position": "Tür"
+                }
+            ],
+            "circuits": [
+                {
+                    "gpio_pin": "18",
+                    "number": "1",
+                    "position": "Bad unten"
+                }
+            ],
+            "pid": {
+                "p": "0.572961",
+                "i": "0.00002",
+                "d": "0.0",
+                "default": "18"
+            }
+        },
+        {
+            "name": "Küche",
+            "id": "kue",
+            "ha_sensors": [
+                {
+                    "entity_id": "sensor.thb1_C586_temperature",
+                    "weight": "100",
+                    "position": "Kühlschrank"
+                }
+            ],
+            "circuits": [
+                {
+                    "gpio_pin": "13",
+                    "number": "2",
+                    "position": "Küche"
+                }
+            ],
+            "pid": {
+                "p": "0.572962",
+                "i": "0.00002",
+                "d": "0.0",
+                "default": "21"
+            }
+        },
+        {
+            "name": "Wintergarten",
+            "id": "wg",
+            "ha_sensors": [
+                {
+                    "entity_id": "sensor.thb1_DF6A_temperature",
+                    "weight": "100",
+                    "position": ""
+                }
+            ],
+            "circuits": [
+                {
+                    "gpio_pin": "4",
+                    "number": "4",
+                    "position": "Wintergarten"
+                }
+            ],
+            "pid": {
+                "p": "0.572962",
+                "i": "0.00002",
+                "d": "0.0",
+                "default": "16"
+            }
+        },
+        {
+            "name": "Wohnzimmer",
+            "id": "wz",
+            "ha_sensors": [
+                {
+                    "entity_id": "sensor.thb1_0552_temperature",
+                    "weight": "100",
+                    "position": "Wohnzimmer"
+                }
+            ],
+            "circuits": [
+                {
+                    "gpio_pin": "14",
+                    "number": "3",
+                    "position": "Esszimmer"
+                },
+                {
+                    "gpio_pin": "25",
+                    "number": "5",
+                    "position": "WohnzimmerVorn"
+                },
+                {
+                    "gpio_pin": "26",
+                    "number": "6",
+                    "position": "WohnzimmerHinten"
+                }
+            ],
+            "pid": {
+                "p": "0.572962",
+                "i": "0.00002",
+                "d": "0.0",
+                "default": "22"
+            }
+        },
+        {
+            "name": "Hobbyraum",
+            "id": "hr",
+            "ha_sensors": [
+                {
+                    "entity_id": "sensor.thb1_ADC9_temperature",
+                    "weight": "100",
+                    "position": "Regal"
+                }
+            ],
+            "circuits": [
+                {
+                    "gpio_pin": "33",
+                    "number": "7",
+                    "position": "Technikraum"
+                }
+            ],
+            "pid": {
+                "p": "0.572962",
+                "i": "0.00002",
+                "d": "0.0",
+                "default": "22"
+            }
+        },
+        {
+            "name": "Gästezimmer",
+            "id": "gz",
+            "ha_sensors": [
+                {
+                    "entity_id": "sensor.thb1_22E6_temperature",
+                    "weight": "100",
+                    "position": "Tür"
+                }
+            ],
+            "circuits": [
+                {
+                    "gpio_pin": "32",
+                    "number": "8",
+                    "position": "Gästezimmer"
+                }
+            ],
+            "pid": {
+                "p": "0.572962",
+                "i": "0.00002",
+                "d": "0.0",
+                "default": "17"
+            }
+        }
+    ]
+}

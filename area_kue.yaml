@@ -1,0 +1,93 @@
+sensor:
+  - platform: homeassistant
+    id: sensor_kue_1
+    name: "Küche Temperatur - Kühlschrank"
+    entity_id: sensor.thb1_C586_temperature
+
+  - platform: template
+    name: "Küche Temperatur - gemittelt"
+    id: sensor_kue
+    update_interval: 10s
+    filters:
+      - median:
+          window_size: 5
+          send_first_at: 1
+
+    lambda: |-
+        return (id(sensor_kue_1).state * 100.0)/100.0;
+  - platform: pid
+    name: "Küche - PID KP"
+    type: KP
+    climate_id: climate_pid_kue
+  - platform: pid
+    name: "Küche - PID KI"
+    type: KI
+    climate_id: climate_pid_kue
+  - platform: pid
+    name: "Küche - PID KD"
+    type: KD
+    climate_id: climate_pid_kue
+  - platform: pid
+    name: "Küche - PID HEAT"
+    type: HEAT
+    climate_id: climate_pid_kue
+
+climate:
+  - platform: pid
+    id: climate_pid_kue
+    name: "Küche Climate PID"
+    sensor: sensor_kue
+    heat_output: output_kue
+    default_target_temperature: 21°C
+    control_parameters:
+      kp: 0.572962
+      ki: 0.00002
+      kd: 0.0
+
+output:
+  - platform: template
+    id: output_kue
+    type: float
+    write_action:
+      - if:
+          condition:
+            lambda: return ((state == 0.0));
+          then:
+            - logger.log: "---  ZERO   --- output_kue: write_action triggered with state == 0.0"
+          else:
+            - logger.log: "-- NON-ZERO --- output_kue: write_action triggered with state <> 0"
+      - delay: !lambda "return 1 * 1 / 8 * 60 * 1000;"
+      - logger.log: "---  After DELAY  --- setting slow_pwm_kue_1 with state using lambda"
+      - output.set_level:
+          id: slow_pwm_kue_1
+          level: !lambda return state;
+
+  - platform: slow_pwm
+    id: slow_pwm_kue_1
+    pin:
+      number: 13
+      inverted: false
+      mode:
+        output: true
+        pulldown: True
+    period:
+      minutes: 1
+    restart_cycle_on_state_change: false
+    state_change_action:
+        - logger.log: "---  SLOWPWM StateChange --- slow_pwm_kue_1 state changed"
+    turn_on_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_2).publish_state(true);
+    turn_off_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_2).publish_state(false);
+
+
+# sensors enabling display of output state in HA
+binary_sensor:
+  - platform: template
+    id: stellventil_display_2
+    name: "Stellventil - Unten - 2 - Küche"
+

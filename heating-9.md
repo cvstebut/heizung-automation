@@ -18,7 +18,12 @@ heating-9
 - Test: Test wireless flashing with modification to dummy-substitution
 
 
+heating-6
+byRWJkA7hBl8ITXmhLqlvsrw+LpSfCEwZoFcuxETY+8=
+
 ip
+heating-9: 10.0.12.22
+heating-6: 10.0.12.23
 
 ```yaml
 wifi:
@@ -27,7 +32,7 @@ wifi:
   manual_ip:
     gateway: 10.0.0.1
     subnet: 255.255.0.0
-    static_ip: 10.0.12.20
+    static_ip: 10.0.12.x
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
     ssid: "Heizung-Oben Fallback Hotspot"

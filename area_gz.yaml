@@ -1,0 +1,93 @@
+sensor:
+  - platform: homeassistant
+    id: sensor_gz_1
+    name: "Gästezimmer Temperatur - Tür"
+    entity_id: sensor.thb1_22E6_temperature
+
+  - platform: template
+    name: "Gästezimmer Temperatur - gemittelt"
+    id: sensor_gz
+    update_interval: 10s
+    filters:
+      - median:
+          window_size: 5
+          send_first_at: 1
+
+    lambda: |-
+        return (id(sensor_gz_1).state * 100.0)/100.0;
+  - platform: pid
+    name: "Gästezimmer - PID KP"
+    type: KP
+    climate_id: climate_pid_gz
+  - platform: pid
+    name: "Gästezimmer - PID KI"
+    type: KI
+    climate_id: climate_pid_gz
+  - platform: pid
+    name: "Gästezimmer - PID KD"
+    type: KD
+    climate_id: climate_pid_gz
+  - platform: pid
+    name: "Gästezimmer - PID HEAT"
+    type: HEAT
+    climate_id: climate_pid_gz
+
+climate:
+  - platform: pid
+    id: climate_pid_gz
+    name: "Gästezimmer Climate PID"
+    sensor: sensor_gz
+    heat_output: output_gz
+    default_target_temperature: 17°C
+    control_parameters:
+      kp: 0.572962
+      ki: 0.00002
+      kd: 0.0
+
+output:
+  - platform: template
+    id: output_gz
+    type: float
+    write_action:
+      - if:
+          condition:
+            lambda: return ((state == 0.0));
+          then:
+            - logger.log: "---  ZERO   --- output_gz: write_action triggered with state == 0.0"
+          else:
+            - logger.log: "-- NON-ZERO --- output_gz: write_action triggered with state <> 0"
+      - delay: !lambda "return 1 * 7 / 8 * 60 * 1000;"
+      - logger.log: "---  After DELAY  --- setting slow_pwm_gz_1 with state using lambda"
+      - output.set_level:
+          id: slow_pwm_gz_1
+          level: !lambda return state;
+
+  - platform: slow_pwm
+    id: slow_pwm_gz_1
+    pin:
+      number: 32
+      inverted: false
+      mode:
+        output: true
+        pulldown: True
+    period:
+      minutes: 1
+    restart_cycle_on_state_change: false
+    state_change_action:
+        - logger.log: "---  SLOWPWM StateChange --- slow_pwm_gz_1 state changed"
+    turn_on_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_8).publish_state(true);
+    turn_off_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_8).publish_state(false);
+
+
+# sensors enabling display of output state in HA
+binary_sensor:
+  - platform: template
+    id: stellventil_display_8
+    name: "Stellventil - Unten - 8 - Gästezimmer"
+

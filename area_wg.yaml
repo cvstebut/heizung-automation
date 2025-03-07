@@ -1,0 +1,93 @@
+sensor:
+  - platform: homeassistant
+    id: sensor_wg_1
+    name: "Wintergarten Temperatur"
+    entity_id: sensor.thb1_DF6A_temperature
+
+  - platform: template
+    name: "Wintergarten Temperatur - gemittelt"
+    id: sensor_wg
+    update_interval: 10s
+    filters:
+      - median:
+          window_size: 5
+          send_first_at: 1
+
+    lambda: |-
+        return (id(sensor_wg_1).state * 100.0)/100.0;
+  - platform: pid
+    name: "Wintergarten - PID KP"
+    type: KP
+    climate_id: climate_pid_wg
+  - platform: pid
+    name: "Wintergarten - PID KI"
+    type: KI
+    climate_id: climate_pid_wg
+  - platform: pid
+    name: "Wintergarten - PID KD"
+    type: KD
+    climate_id: climate_pid_wg
+  - platform: pid
+    name: "Wintergarten - PID HEAT"
+    type: HEAT
+    climate_id: climate_pid_wg
+
+climate:
+  - platform: pid
+    id: climate_pid_wg
+    name: "Wintergarten Climate PID"
+    sensor: sensor_wg
+    heat_output: output_wg
+    default_target_temperature: 16°C
+    control_parameters:
+      kp: 0.572962
+      ki: 0.00002
+      kd: 0.0
+
+output:
+  - platform: template
+    id: output_wg
+    type: float
+    write_action:
+      - if:
+          condition:
+            lambda: return ((state == 0.0));
+          then:
+            - logger.log: "---  ZERO   --- output_wg: write_action triggered with state == 0.0"
+          else:
+            - logger.log: "-- NON-ZERO --- output_wg: write_action triggered with state <> 0"
+      - delay: !lambda "return 1 * 2 / 8 * 60 * 1000;"
+      - logger.log: "---  After DELAY  --- setting slow_pwm_wg_1 with state using lambda"
+      - output.set_level:
+          id: slow_pwm_wg_1
+          level: !lambda return state;
+
+  - platform: slow_pwm
+    id: slow_pwm_wg_1
+    pin:
+      number: 4
+      inverted: false
+      mode:
+        output: true
+        pulldown: True
+    period:
+      minutes: 1
+    restart_cycle_on_state_change: false
+    state_change_action:
+        - logger.log: "---  SLOWPWM StateChange --- slow_pwm_wg_1 state changed"
+    turn_on_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_4).publish_state(true);
+    turn_off_action:
+      then:
+        - lambda: |-
+            id(stellventil_display_4).publish_state(false);
+
+
+# sensors enabling display of output state in HA
+binary_sensor:
+  - platform: template
+    id: stellventil_display_4
+    name: "Stellventil - Unten - 4 - Wintergarten"
+
