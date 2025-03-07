@@ -89,7 +89,7 @@ output:
   - platform: slow_pwm
     id: slow_pwm_wz_1
     pin:
-      number: 14
+      number: 4
       inverted: false
       mode:
         output: true
@@ -111,7 +111,7 @@ output:
   - platform: slow_pwm
     id: slow_pwm_wz_2
     pin:
-      number: 25
+      number: 26
       inverted: false
       mode:
         output: true
@@ -133,7 +133,7 @@ output:
   - platform: slow_pwm
     id: slow_pwm_wz_3
     pin:
-      number: 26
+      number: 25
       inverted: false
       mode:
         output: true

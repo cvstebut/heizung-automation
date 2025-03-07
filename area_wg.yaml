@@ -65,7 +65,7 @@ output:
   - platform: slow_pwm
     id: slow_pwm_wg_1
     pin:
-      number: 4
+      number: 27
       inverted: false
       mode:
         output: true

@@ -18,8 +18,6 @@ heating-9
 - Test: Test wireless flashing with modification to dummy-substitution
 
 
-heating-6
-byRWJkA7hBl8ITXmhLqlvsrw+LpSfCEwZoFcuxETY+8=
 
 ip
 heating-9: 10.0.12.22
