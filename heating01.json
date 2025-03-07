@@ -1,7 +1,7 @@
 {
     "friendly_name": "hz01",
     "level": "Oben",
-    "interval": "1",
+    "interval": "24",
     "deadtime": "80",
     "dallas_sensors": [
         {
@@ -18,12 +18,12 @@
             "ha_sensors": [
                 {
                     "entity_id": "sensor.thb1_59e2_temperature",
-                    "weight": "30",
+                    "weight": "0",
                     "position": "Fenster"
                 },
                 {
                     "entity_id": "sensor.thb1_bb17_temperature",
-                    "weight": "70",
+                    "weight": "100",
                     "position": "Schlaftür"
                 }
             ],
