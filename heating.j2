@@ -1,6 +1,16 @@
 {#
     Debug - Generate Switch - visible from HA
 -#}
+
+esphome:
+  on_boot:
+    - priority: -100.0
+      then:
+{%- for c in circuits %}
+        - lambda: |-
+            id(stellventil_display_{{ c.number }}).publish_state(false);
+{% endfor %}
+
 sensor:
 {%- for ha in ha_sensors %}
   - platform: homeassistant

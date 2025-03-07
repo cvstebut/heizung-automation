@@ -1,3 +1,11 @@
+esphome:
+  on_boot:
+    - priority: -100.0
+      then:
+        - lambda: |-
+            id(stellventil_display_2).publish_state(false);
+
+
 sensor:
   - platform: homeassistant
     id: sensor_kue_1
