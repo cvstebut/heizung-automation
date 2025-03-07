@@ -60,7 +60,7 @@ output:
             - logger.log: "---  ZERO   --- output_az: write_action triggered with state == 0.0"
           else:
             - logger.log: "-- NON-ZERO --- output_az: write_action triggered with state <> 0"
-      - delay: !lambda "return 20 * 0 / 7 * 60 * 1000;"
+      - delay: !lambda "return 1 * 0 / 7 * 60 * 1000;"
       - logger.log: "---  After DELAY  --- setting slow_pwm_az_1 with state using lambda"
       - output.set_level:
           id: slow_pwm_az_1
@@ -72,7 +72,7 @@ output:
             - logger.log: "---  ZERO   --- output_az: write_action triggered with state == 0.0"
           else:
             - logger.log: "-- NON-ZERO --- output_az: write_action triggered with state <> 0"
-      - delay: !lambda "return 20 * 1 / 7 * 60 * 1000;"
+      - delay: !lambda "return 1 * 1 / 7 * 60 * 1000;"
       - logger.log: "---  After DELAY  --- setting slow_pwm_az_2 with state using lambda"
       - output.set_level:
           id: slow_pwm_az_2
@@ -87,7 +87,7 @@ output:
         output: true
         pulldown: True
     period:
-      minutes: 20
+      minutes: 1
     restart_cycle_on_state_change: false
     state_change_action:
         - logger.log: "---  SLOWPWM StateChange --- slow_pwm_az_1 state changed"
@@ -109,7 +109,7 @@ output:
         output: true
         pulldown: True
     period:
-      minutes: 20
+      minutes: 1
     restart_cycle_on_state_change: false
     state_change_action:
         - logger.log: "---  SLOWPWM StateChange --- slow_pwm_az_2 state changed"

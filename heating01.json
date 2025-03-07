@@ -1,7 +1,7 @@
 {
     "friendly_name": "hz01",
     "level": "Oben",
-    "interval": "20",
+    "interval": "1",
     "deadtime": "80",
     "dallas_sensors": [
         {
@@ -44,30 +44,6 @@
                 "i": "0.00002",
                 "d": "0.0",
                 "default": "21"
-            }
-        },
-        {
-            "name": "Badezimmer oben",
-            "id": "bad",
-            "ha_sensors": [
-                {
-                    "entity_id": "sensor.thb1_921b_temperature",
-                    "weight": "100",
-                    "position": ""
-                }
-            ],
-            "circuits": [
-                {
-                    "gpio_pin": "26",
-                    "number": "6",
-                    "position": "Bad"
-                }
-            ],
-            "pid": {
-                "p": "0.572962",
-                "i": "0.00002",
-                "d": "0.0",
-                "default": "22"
             }
         },
         {
@@ -116,7 +92,7 @@
             ],
             "circuits": [
                 {
-                    "gpio_pin": "25",
+                    "gpio_pin": "26",
                     "number": "5",
                     "position": "Schlafzimmer"
                 }
@@ -125,7 +101,31 @@
                 "p": "0.572962",
                 "i": "0.00002",
                 "d": "0.0",
-                "default": "19"
+                "default": "18"
+            }
+        },
+        {
+            "name": "Badezimmer oben",
+            "id": "bad",
+            "ha_sensors": [
+                {
+                    "entity_id": "sensor.thb1_921b_temperature",
+                    "weight": "100",
+                    "position": ""
+                }
+            ],
+            "circuits": [
+                {
+                    "gpio_pin": "25",
+                    "number": "6",
+                    "position": "Bad"
+                }
+            ],
+            "pid": {
+                "p": "0.572962",
+                "i": "0.00002",
+                "d": "0.0",
+                "default": "22"
             }
         },
         {

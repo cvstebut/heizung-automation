@@ -55,7 +55,7 @@ output:
             - logger.log: "---  ZERO   --- output_tr: write_action triggered with state == 0.0"
           else:
             - logger.log: "-- NON-ZERO --- output_tr: write_action triggered with state <> 0"
-      - delay: !lambda "return 20 * 6 / 7 * 60 * 1000;"
+      - delay: !lambda "return 1 * 6 / 7 * 60 * 1000;"
       - logger.log: "---  After DELAY  --- setting slow_pwm_tr_1 with state using lambda"
       - output.set_level:
           id: slow_pwm_tr_1
@@ -70,7 +70,7 @@ output:
         output: true
         pulldown: True
     period:
-      minutes: 20
+      minutes: 1
     restart_cycle_on_state_change: false
     state_change_action:
         - logger.log: "---  SLOWPWM StateChange --- slow_pwm_tr_1 state changed"
