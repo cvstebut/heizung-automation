@@ -1,0 +1,69 @@
+substitutions:
+  friendly_name: hz6
+  version: v0.1.10
+  
+esphome:
+  name: heating-6
+  friendly_name: heating-6
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "byRWJkA7hBl8ITXmhLqlvsrw+LpSfCEwZoFcuxETY+8="
+
+ota:
+  - platform: esphome
+    password: "10af814a138d1eeab02f038948cb7b48"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  manual_ip:
+    gateway: 10.0.0.1
+    subnet: 255.255.0.0
+    static_ip: 10.0.12.23
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Heating-6 Fallback Hotspot"
+    password: "JPm53UinuNf4"
+
+captive_portal:
+
+time:
+- platform: sntp
+  id: sntp_time
+  timezone: "Europe/Berlin"
+
+one_wire:
+  - platform: gpio
+    pin: 17
+
+sensor:
+-   platform: dallas_temp
+    name: ${friendly_name} Temperatur Vorlauf
+    id: bat001_dallas_1
+    update_interval: 15s
+    address: 0xcc00000083396128
+
+-   platform: dallas_temp
+    name: ${friendly_name} Temperatur Rücklauf
+    id: bat001_dallas_2
+    update_interval: 15s
+    address: 0x8500000082e91128
+
+packages:
+  heizung:
+    url: https://github.com/cvstebut/heizung-automation
+    files: [area_bu.yaml, area_kue.yaml, area_wg.yaml, area_wz.yaml, area_hr.yaml, area_gz.yaml]
+    ref: main
+    refresh: 1s
+ 
