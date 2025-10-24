@@ -51,7 +51,7 @@
             "id": "sp",
             "ha_sensors": [
                 {
-                    "entity_id": "sensor.thb1_3A04_temperature",
+                    "entity_id": "sensor.thb1_9046_temperature",
                     "weight": "50",
                     "position": "SP Vorn"
                 },

@@ -1,8 +1,19 @@
+esphome:
+  on_boot:
+    - priority: -100.0
+      then:
+        - lambda: |-
+            id(stellventil_display_3).publish_state(false);
+
+        - lambda: |-
+            id(stellventil_display_4).publish_state(false);
+
+
 sensor:
   - platform: homeassistant
     id: sensor_sp_1
     name: "Sportzimmer Temperatur - SP Vorn"
-    entity_id: sensor.thb1_3A04_temperature
+    entity_id: sensor.thb1_9046_temperature
 
   - platform: homeassistant
     id: sensor_sp_2
